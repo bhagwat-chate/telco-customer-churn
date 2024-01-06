@@ -4,9 +4,9 @@ from source.constant import constant_train
 
 
 class TrainingPipelineConfig:
-    def __init__(self, timestamp=datetime.now()):
-        timestamp = timestamp.strftime("%m_%d_%Y_%H_%M_%S")
-        self.artifact_dir = os.path.join(constant_train.ARTIFACT_DIR, timestamp)
+    def __init__(self, global_timestamp):
+        self.artifact_dir = os.path.join(constant_train.ARTIFACT_DIR, global_timestamp)
+        self.global_timestamp = global_timestamp
         self.target_column = constant_train.TARGET_COLUMN
         self.train_pipeline = constant_train.TRAIN_PIPELINE_NAME
 
