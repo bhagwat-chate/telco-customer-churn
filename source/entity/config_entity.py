@@ -19,4 +19,6 @@ class TrainingPipelineConfig:
         self.mongodb_url_key = os.environ[constant_train.MONGODB_URL_KEY]
         self.database_name = constant_train.DATABASE_NAME
         self.collection_name = constant_train.DI_COLLECTION_NAME
+        self.mandatory_col_list = constant_train.DI_MANDATORY_COLUMN_LIST
+        self.mandatory_col_data_type = constant_train.DI_MANDATORY_COLUMN_DATA_TYPE
 
