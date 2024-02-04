@@ -98,6 +98,7 @@ class DataIngestion:
 
         except ChurnException as e:
             raise e
+
     def initiate_data_ingestion(self):
         data = self.export_data_into_feature_store()
         data = self.clean_data(data)
