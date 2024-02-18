@@ -11,3 +11,6 @@ def generate_global_timestamp():
         global_timestamp = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
 
     return global_timestamp
+
+def export_data_csv(data, file_path):
+    pass
