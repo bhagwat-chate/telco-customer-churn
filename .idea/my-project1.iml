@@ -5,4 +5,7 @@
     <orderEntry type="jdk" jdkName="D:\telco-customer-churn\venv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="SonarLintModuleSettings">
+    <option name="uniqueId" value="c781be53-e791-4ee7-b54d-5b01c69c34b7" />
+  </component>
 </module>

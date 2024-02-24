@@ -12,5 +12,6 @@ def generate_global_timestamp():
 
     return global_timestamp
 
+
 def export_data_csv(data, file_path):
     pass
