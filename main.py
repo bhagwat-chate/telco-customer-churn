@@ -13,7 +13,7 @@ if __name__ == '__main__':
     logging.info("logger timestamp setup complete")
 
     train_pipeline_config_obj = PipelineConfig(global_timestamp)
-    print(train_pipeline_config_obj.__dict__)
+    # print(train_pipeline_config_obj.__dict__)
 
     logging.info("training pipeline config created")
 
