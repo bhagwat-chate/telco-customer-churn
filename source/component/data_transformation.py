@@ -1,3 +1,4 @@
+import numpy as np
 import os
 import pandas as pd
 import pickle
@@ -91,6 +92,8 @@ class DataTransformation:
 
     def oversample_smote(self, data):
         try:
+
+            np.random.seed(42)
 
             x = data.drop(columns=['Churn'])
             y = data['Churn']

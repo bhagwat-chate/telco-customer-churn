@@ -59,7 +59,6 @@ class DataIngestion:
         except ChurnException as e:
             raise e
 
-
     def clean_data(self, data):
         try:
 
