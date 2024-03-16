@@ -18,7 +18,7 @@ if __name__ == '__main__':
     logging.info("training pipeline config created")
 
     pipeline_obj = DataPipeline(global_timestamp)
-    # pipeline_obj.run_train_pipeline()
+    pipeline_obj.run_train_pipeline()
 
     pipeline_obj.run_predict_pipeline()
 
