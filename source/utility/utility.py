@@ -18,6 +18,7 @@ def generate_global_timestamp():
 def export_data_csv(data, filename, file_path):
 
     try:
+
         if not os.path.exists(file_path):
             os.makedirs(file_path, exist_ok=True)
 
@@ -34,8 +35,6 @@ def import_csv_file(filename, file_path):
 
             return pd.read_csv(file_path + "\\" + filename)
 
-        else:
-            print(f"path does not exist: {file_path}")
-
     except ChurnException as e:
+        print(f"path does not exist: {file_path}")
         raise e

@@ -9,7 +9,7 @@ FILE_NAME = 'train_data.csv'
 TRAIN_FILE_NAME = 'train.csv'
 TEST_FILE_NAME = 'test.csv'
 
-# MONGODB_URL_KEY = "MONGODB_KEY"
+MONGODB_KEY = "MONGODB_KEY"
 DATABASE_NAME = 'db-customer-churn'
 
 # Data ingestion constant
@@ -37,6 +37,7 @@ DI_MANDATORY_COLUMN_DATA_TYPE = {'gender': 'object', 'SeniorCitizen': 'object', 
 # Data validation constant
 DV_IMPUTATION_VALUES_FILE_NAME = "source/ml/imputation_values.csv"
 
+
 DV_OUTLIER_PARAMS_FILE = 'source/ml/outlier_details.csv'
 DV_DIR_NAME = "data_validation"
 
@@ -49,7 +50,6 @@ DT_DIR_NAME: str = "data_transformation"
 # Model train & evaluate
 MODEL_PATH = "source/ml/artifact"
 FINAL_MODEL_PATH = "source/ml/final_model"
-
 
 # Prediction constant
 PREDICT_PIPELINE_NAME = 'predict'

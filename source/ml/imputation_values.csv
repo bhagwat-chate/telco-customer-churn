@@ -1,9 +1,9 @@
 ,imputation_value
+SeniorCitizen,0.0
 tenure,29.0
-MonthlyCharges,70.525
-TotalCharges,1410.8
+MonthlyCharges,70.45
+TotalCharges,1410.25
 gender,Male
-SeniorCitizen,0
 Partner,No
 Dependents,No
 PhoneService,Yes

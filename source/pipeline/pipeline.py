@@ -14,13 +14,13 @@ class DataPipeline:
         data_ingestion_obj = DataIngestion(self.utility_config)
         data_ingestion_obj.initiate_data_ingestion(key)
 
-    def start_data_validation(self):
+    def start_data_validation(self, key):
         data_validation_obj = DataValidation(self.utility_config)
-        data_validation_obj.initiate_data_validation()
+        data_validation_obj.initiate_data_validation(key)
 
-    def start_data_transformation(self):
+    def start_data_transformation(self, key):
         data_tras_obj = DataTransformation(self.utility_config)
-        data_tras_obj.initiate_data_transformation()
+        data_tras_obj.initiate_data_transformation(key)
 
     def start_model_train_evalaute(self):
         model_train_eval_obj = ModelTrainEvaluate(self.utility_config)
@@ -28,12 +28,12 @@ class DataPipeline:
 
     def run_train_pipeline(self):
         self.start_data_ingestion('train')
-        # self.start_data_validation()
-        # self.start_data_transformation()
+        self.start_data_validation('train')
+        self.start_data_transformation('train')
         # self.start_model_train_evalaute()
 
     def run_predict_pipeline(self):
         self.start_data_ingestion('predict')
-        # self.start_data_validation()
-        # self.start_data_transformation()
+        self.start_data_validation('predict')
+        self.start_data_transformation('predict')
         # self.start_model_train_evalaute()
