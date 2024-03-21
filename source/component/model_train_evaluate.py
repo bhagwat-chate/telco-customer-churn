@@ -21,10 +21,16 @@ def hyperparameter_tuning(x_train, y_train):
     try:
         model = GradientBoostingClassifier()
 
+        # param_grid = {
+        #     'loss': ['log_loss', 'exponential'],
+        #     'learning_rate': [0.01, 0.1, 0.5],
+        #     'n_estimators': [50, 100]
+        # }
+
         param_grid = {
-            'loss': ['log_loss', 'exponential'],
-            'learning_rate': [0.01, 0.1, 0.5],
-            'n_estimators': [50, 100]
+            'loss': ['log_loss'],
+            'learning_rate': [0.01],
+            'n_estimators': [50]
         }
 
         f1_scorer = make_scorer(f1_score, average='macro')
@@ -128,8 +134,8 @@ class ModelTrainEvaluate:
     def initiate_model_training(self):
         try:
 
-            train_data = pd.read_csv(self.utility_config.dt_train_file_path+'/'+self.utility_config.train_file_name, dtype={"TotalCharges": "float64"})
-            test_data = pd.read_csv(self.utility_config.dt_test_file_path+'/'+self.utility_config.test_file_name, dtype={"TotalCharges": "float64"})
+            train_data = pd.read_csv(self.utility_config.train_dt_train_file_path+'/'+self.utility_config.train_file_name, dtype={"TotalCharges": "float64"})
+            test_data = pd.read_csv(self.utility_config.train_dt_test_file_path+'/'+self.utility_config.test_file_name, dtype={"TotalCharges": "float64"})
 
             self.model_training(train_data, test_data)
             self.model_evaluation_report.to_csv("source/ml/model_evaluation_report.csv", index=False)
