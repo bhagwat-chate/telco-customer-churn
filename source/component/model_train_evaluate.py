@@ -53,7 +53,7 @@ class ModelTrainEvaluate:
         self.utility_config = utility_config
 
         self.models = {
-            "LogisticRegression": LogisticRegression(),
+            # "LogisticRegression": LogisticRegression(),
             "SVC": SVC(),
             "DecisionTreeClassifier": DecisionTreeClassifier(),
             "RandomForestClassifier": RandomForestClassifier(),
@@ -76,7 +76,7 @@ class ModelTrainEvaluate:
 
             # dir_path = os.path.dirname(self.utility_config.model_path)
             # os.makedirs(dir_path, exist_ok=True)
-
+            train_data.to_csv("train_data.csv", index=False)
             for name, model in self.models.items():
                 model.fit(x_train, y_train)
                 y_pred = model.predict(x_test)
