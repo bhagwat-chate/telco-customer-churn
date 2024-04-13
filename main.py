@@ -23,3 +23,4 @@ if __name__ == '__main__':
     pipeline_obj.run_predict_pipeline()
 
     print('done')
+
