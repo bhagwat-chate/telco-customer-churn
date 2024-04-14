@@ -3,7 +3,7 @@ import pymongo
 from pymongo import MongoClient
 
 from source.exception import ChurnException
-from source.utility.utility import import_csv_file, export_data_csv
+from source.utility.utility import import_csv_file, export_data_csv, read_csv_from_s3, upload_artifact_to_s3
 
 
 class ModelPrediction:
@@ -26,7 +26,7 @@ class ModelPrediction:
         except ChurnException as e:
             raise e
 
-    def make_predict(self, model, data):
+    def make_prediction(self, model, data):
         try:
 
             return model.predict(data)
@@ -60,19 +60,21 @@ class ModelPrediction:
 
     def initiate_model_prediction(self):
 
-        predict_data = import_csv_file(self.utility_config.predict_file, self.utility_config.predict_dt_file_path)
+        # predict_data = import_csv_file(self.utility_config.predict_file, self.utility_config.predict_dt_file_path)
+        predict_data = read_csv_from_s3(self.utility_config.aws_bucket_name, self.utility_config.predict_dt_file_path+'/'+self.utility_config.predict_file)
 
         predict_data = self.clean_data(predict_data)
 
         model = self.load_model_pickle()
 
-        feature_data = import_csv_file(self.utility_config.predict_di_feature_store_file_name,
-                                       self.utility_config.predict_di_feature_store_file_path)
+        # feature_data = import_csv_file(self.utility_config.predict_di_feature_store_file_name, self.utility_config.predict_di_feature_store_file_path)
+        feature_data = read_csv_from_s3(self.utility_config.aws_bucket_name, self.utility_config.predict_di_feature_store_file_path+'/'+self.utility_config.predict_di_feature_store_file_name)
 
-        feature_data['Churn'] = self.make_predict(model, predict_data)
+        feature_data['Churn'] = self.make_prediction(model, predict_data)
 
         feature_data['Churn'] = feature_data['Churn'].map({1: "Yes", 0: "No"})
 
         self.export_prediction_into_db(feature_data)
-        export_data_csv(feature_data, self.utility_config.predict_file, self.utility_config.predict_mp_file_path)
+        # export_data_csv(feature_data, self.utility_config.predict_file, self.utility_config.predict_mp_file_path)
 
+        upload_artifact_to_s3(feature_data, self.utility_config.predict_file, self.utility_config.predict_mp_file_path, self.utility_config.aws_bucket_name)

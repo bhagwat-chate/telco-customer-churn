@@ -1,9 +1,9 @@
-
+import os
 
 # Common constants
 TARGET_COLUMN = 'Churn'
 TRAIN_PIPELINE_NAME = 'train'
-ARTIFACT_DIR = 'artifact'
+ARTIFACT_DIR = 'dev-tcc-artifact'
 FILE_NAME = 'train_data.csv'
 
 TRAIN_FILE_NAME = 'train.csv'
@@ -37,7 +37,6 @@ DI_MANDATORY_COLUMN_DATA_TYPE = {'gender': 'object', 'SeniorCitizen': 'object', 
 # Data validation constant
 DV_IMPUTATION_VALUES_FILE_NAME = "source/ml/imputation_values.csv"
 
-
 DV_OUTLIER_PARAMS_FILE = 'source/ml/outlier_details.csv'
 DV_DIR_NAME = "data_validation"
 
@@ -59,3 +58,11 @@ PREDICT_FILE = 'predict.csv'
 PREDICT_DI_COLLECTION_NAME = "predict-telco-customer-churn"
 
 FINAL_MODEL_FILE_NAME = "GradientBoostingClassifier.pkl"
+
+
+AWS_ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
+AWS_SECRET_KEY = os.environ['AWS_SECRET_KEY']
+AWS_REGION = os.environ['AWS_REGION']
+
+AWS_BUCKET_NAME = "dev-telco-cust-churn"
+AWS_BUCKET_PREFIX = "dev-tcc-artifact"

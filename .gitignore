@@ -3,3 +3,4 @@ __pycache__/
 artifact/
 .idea/
 .ipynb_checkpoints
+aws_layer/
