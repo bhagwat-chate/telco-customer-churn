@@ -1,5 +1,8 @@
 import os
 
+APP_HOST='0.0.0.0'
+APP_PORT=8000
+
 # Common constants
 TARGET_COLUMN = 'Churn'
 TRAIN_PIPELINE_NAME = 'train'
@@ -58,7 +61,6 @@ PREDICT_FILE = 'predict.csv'
 PREDICT_DI_COLLECTION_NAME = "predict-telco-customer-churn"
 
 FINAL_MODEL_FILE_NAME = "GradientBoostingClassifier.pkl"
-
 
 AWS_ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
 AWS_SECRET_KEY = os.environ['AWS_SECRET_KEY']
