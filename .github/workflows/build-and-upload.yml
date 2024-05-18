@@ -62,6 +62,7 @@ jobs:
           unzip awscliv2.zip
           sudo ./aws/install --update
           echo 'export PATH=$PATH:/usr/local/bin' >> $GITHUB_ENV
+          source ~/.bashrc
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
