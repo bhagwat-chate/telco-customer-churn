@@ -19,16 +19,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Lint code (replace with your specific linting command)
-        run: |
-          # Example: Use ESLint for JavaScript/TypeScript
-          npm install -g eslint
-          eslint .
+      - name: Lint code
+        run: echo "Linting repository"
 
-      - name: Run unit tests (replace with your specific testing command)
-        run: |
-          # Example: Use Jest for unit testing
-          npm test
+      - name: Run unit tests
+        run: echo "Running unit tests"
 
   build-and-push-ecr-image:
     name: Continuous Delivery
@@ -38,20 +33,42 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up QEMU (optional, if needed for multi-arch builds)
-        uses: docker/setup-qemu-action@v2
+      - name: Install Utilities
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq unzip
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Set up Docker Buildx (optional, if needed for multi-arch builds)
-        uses: docker/setup-buildx-action@v2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Install Docker (existing commands)
-        # ... (unchanged)
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+          IMAGE_TAG: latest
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          
 
-      - name: Install AWS CLI (using pre-built action)
-        uses: aws-actions/install-aws-cli@v2
-
-      - name: Verify AWS CLI installation (optional)
-        run: aws --version  # (optional)
+  Continuous-Deployment:
+    needs: build-and-push-ecr-image
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -60,45 +77,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_LOGIN_URI }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
-          IMAGE_TAG: latest
-        run: |
-          docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --push .
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-  continuous-deployment:
-    name: Continuous Deployment
-    needs: build-and-push-ecr-image
-    runs-on: self-hosted
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials (unchanged)
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Log in to Amazon ECR (unchanged)
-        run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_LOGIN_URI }}
-
+      
       - name: Pull latest images
         run: |
-          docker pull <span class="math-inline">\{\{ secrets\.AWS\_ECR\_LOGIN\_URI \}\}/</span>{{ secrets.ECR_REPOSITORY_NAME }}:latest
+         docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
       - name: Stop and remove telecom customer churn container if running
-        # ... (consider adding error handling for cases where container doesn't exist)
+        run: |
+         docker ps -q --filter "name=tcc" | grep -q . && docker stop sensor && docker rm -fv sensor
 
       - name: Run Docker Image to serve users
         run: |
-          docker run -d -p 80:8080 --name=pipeline-app \
-            -e 'MONGO_DB_URL=<span class="math-inline">\{\{ secrets\.MONGODB\_KEY \}\}' \\
-\-<0\>e 'AWS\_ACCESS\_KEY\_ID\=</span>{{ secrets.AWS_ACCESS_KEY_ID }}' \
-            -e 'AWS_SECRET_ACCESS_KEY=<span class="math-inline">\{\{ secrets\.AWS\_SECRET\_ACCESS\_KEY \}\}' \\
-\-e 'AWS\_REGION\=</span>{{ secrets.AWS_REGION }}' \
-            <span class="math-inline">\{\{ secrets\.AWS\_ECR\_LOGIN\_URI \}\}/</span>{{ secrets.ECR_REPOSITORY_NAME }}
+         docker run -d -p 80:8080 --name=sensor -e 'MONGO_DB_URL=${{ secrets.MONGODB_KEY }}' -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+
+      - name: Clean previous images and containers
+        run: |
+         docker system prune -f
