@@ -33,41 +33,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Install Docker
+      - name: Install Utilities
         run: |
           sudo apt-get update
-          sudo apt-get remove -y docker docker-engine docker.io containerd runc
-          sudo apt-get install -y \
-            ca-certificates \
-            curl \
-            gnupg \
-            lsb-release
-          sudo mkdir -p /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          echo \
-            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          sudo apt-get update
-          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-
-      - name: Install AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
-          echo 'export PATH=/usr/local/bin:$PATH' >> ~/.bashrc
-          source ~/.bashrc
-
-      - name: Verify AWS CLI installation
-        run: |
-          aws --version
-
+          sudo apt-get install -y jq unzip
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -75,20 +44,26 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Log in to Amazon ECR
-        run: |
-          sudo aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_LOGIN_URI }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and push image to Amazon ECR
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_LOGIN_URI }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
         run: |
-          sudo docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --push .
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          
 
-  continuous-deployment:
-    name: Continuous Deployment
+  Continuous-Deployment:
     needs: build-and-push-ecr-image
     runs-on: self-hosted
     steps:
@@ -102,22 +77,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Log in to Amazon ECR
-        run: |
-          sudo aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_LOGIN_URI }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
+      
       - name: Pull latest images
         run: |
-          sudo docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+         docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
       - name: Stop and remove telecom customer churn container if running
         run: |
-          sudo docker ps -q --filter "name=pipeline-app" | grep -q . && sudo docker stop pipeline-app && sudo docker rm -fv pipeline-app
+         docker ps -q --filter "name=tcc" | grep -q . && docker stop sensor && docker rm -fv sensor
 
       - name: Run Docker Image to serve users
         run: |
-          sudo docker run -d -p 80:8080 --name=pipeline-app -e 'MONGO_DB_URL=${{ secrets.MONGODB_KEY }}' -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}' ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+         docker run -d -p 80:8080 --name=sensor -e 'MONGO_DB_URL=${{ secrets.MONGODB_KEY }}' -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
       - name: Clean previous images and containers
         run: |
-          sudo docker system prune -f
+         docker system prune -f
