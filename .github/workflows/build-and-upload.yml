@@ -81,13 +81,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      
       - name: Pull latest images
         run: |
          docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-#      - name: Stop and remove telecom customer churn container if running
-#        run: |
-#          docker ps -q --filter "name=tcc" | grep -q . && docker stop tcc-app && docker rm -fv tcc-app
+      # - name: Stop and remove telecom customer churn container if running
+      #   run: |
+      #    docker ps -q --filter "name=tcc" | grep -q . && docker stop sensor && docker rm -fv sensor
 
       - name: Run Docker Image to serve users
         run: |
