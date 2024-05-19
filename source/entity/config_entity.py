@@ -1,7 +1,6 @@
 import os
 from source.constant import constant
 
-
 class PipelineConfig:
     def __init__(self, global_timestamp):
 
