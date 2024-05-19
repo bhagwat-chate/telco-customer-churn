@@ -87,7 +87,7 @@ jobs:
 
       - name: Stop and remove telecom customer churn container if running
         run: |
-          docker ps -q --filter "name=tcc" | grep -q . && docker stop tcc-app && docker rm -fv tcc-app
+          docker ps -q --filter "name=tcc" | grep -q . && docker stop sensor && docker rm -fv sensor
 
       - name: Run Docker Image to serve users
         run: |
