@@ -12,7 +12,7 @@ FILE_NAME = 'train_data.csv'
 TRAIN_FILE_NAME = 'train.csv'
 TEST_FILE_NAME = 'test.csv'
 
-MONGODB_KEY = "MONGODB_KEY"
+MONGODB_KEY = "MONGO_DB_URL"
 DATABASE_NAME = 'db-customer-churn'
 
 # Data ingestion constant
