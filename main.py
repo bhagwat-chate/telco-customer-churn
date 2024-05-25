@@ -4,7 +4,6 @@ from source.logger import setup_logger
 from source.logger import logging
 from source.pipeline.pipeline import DataPipeline
 from source.constant.constant import APP_PORT, APP_HOST
-
 from fastapi import FastAPI, Response
 from starlette.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -43,7 +42,6 @@ def run_pipeline(pipeline_type):
         return f"Model {pipeline_type} complete"
     except Exception as e:
         return f"Error occurred {e}"
-
 
 @app.get("/", tags=['authentication'])
 async def index():
