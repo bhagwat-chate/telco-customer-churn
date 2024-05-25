@@ -12,7 +12,7 @@ FILE_NAME = 'train_data.csv'
 TRAIN_FILE_NAME = 'train.csv'
 TEST_FILE_NAME = 'test.csv'
 
-MONGODB_KEY = "MONGO_DB_URL"
+MONGODB_KEY = "mongodb+srv://datawave05:vhR69BnIn434lGwX@datawave.aignamw.mongodb.net/?retryWrites=true&w=majority"
 DATABASE_NAME = 'db-customer-churn'
 
 # Data ingestion constant

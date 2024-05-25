@@ -27,6 +27,7 @@ class PipelineConfig:
 
         self.train_test_split_ratio = constant.DI_TRAIN_TEST_SPLIT_RATIO
         self.mongodb_url_key = os.environ[constant.MONGODB_KEY]
+
         self.database_name = constant.DATABASE_NAME
         self.train_collection_name = constant.TRAIN_DI_COLLECTION_NAME
         self.mandatory_col_list = constant.DI_MANDATORY_COLUMN_LIST
