@@ -88,7 +88,7 @@ jobs:
 
       - name: Stop and remove telecom customer churn container if running
         run: |
-         docker ps -q --filter "name=tcc" | grep -q . && docker stop telco-cust-churn && docker rm -fv telco-cust-churn
+         docker ps -q --filter "name=telco-cust-churn" | grep -q . && docker stop telco-cust-churn && docker rm -fv telco-cust-churn
 
       - name: Run Docker Image to serve users
         run: |
