@@ -43,6 +43,7 @@ def run_pipeline(pipeline_type):
     except Exception as e:
         return f"Error occurred {e}"
 
+
 @app.get("/", tags=['authentication'])
 async def index():
     return RedirectResponse(url="/docs")
