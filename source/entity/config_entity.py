@@ -10,6 +10,8 @@ class PipelineConfig:
         self.aws_bucket_name = constant.AWS_BUCKET_NAME
         self.aws_bucket_prefix = constant.AWS_BUCKET_PREFIX
 
+        self.mongodb_url_key = os.environ['MONGODB_KEY']
+
         self.artifact_dir = os.path.join(constant.ARTIFACT_DIR, global_timestamp)
         self.global_timestamp = global_timestamp
         self.target_column = constant.TARGET_COLUMN
@@ -26,7 +28,6 @@ class PipelineConfig:
         self.train_di_test_file_path = os.path.join(self.artifact_dir, self.train_pipeline, constant.DI_DIR_NAME, constant.DI_INGESTED_DIR)
 
         self.train_test_split_ratio = constant.DI_TRAIN_TEST_SPLIT_RATIO
-        self.mongodb_url_key = os.environ[constant.MONGODB_KEY]
 
         self.database_name = constant.DATABASE_NAME
         self.train_collection_name = constant.TRAIN_DI_COLLECTION_NAME

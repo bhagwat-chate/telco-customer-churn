@@ -4,4 +4,4 @@ artifact/
 .idea/
 .ipynb_checkpoints
 aws_layer/
-dev-tcc-artifact
+dev-tcc-artifact/

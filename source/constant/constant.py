@@ -62,9 +62,5 @@ PREDICT_DI_COLLECTION_NAME = "predict-telco-customer-churn"
 
 FINAL_MODEL_FILE_NAME = "GradientBoostingClassifier.pkl"
 
-AWS_ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
-AWS_SECRET_KEY = os.environ['AWS_SECRET_KEY']
-AWS_REGION = os.environ['AWS_REGION']
-
 AWS_BUCKET_NAME = "dev-telco-cust-churn"
 AWS_BUCKET_PREFIX = "dev-tcc-artifact"
