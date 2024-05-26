@@ -54,7 +54,7 @@ class ModelTrainEvaluate:
 
         self.models = {
             # "LogisticRegression": LogisticRegression(),
-            "SVC": SVC(),
+            # "SVC": SVC(),
             "DecisionTreeClassifier": DecisionTreeClassifier(),
             "RandomForestClassifier": RandomForestClassifier(),
             "GradientBoostingClassifier": GradientBoostingClassifier(),
