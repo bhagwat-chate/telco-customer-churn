@@ -55,6 +55,7 @@ async def train_route():
     result = run_pipeline("training")
     return {'message': result}
 
+
 @app.get("/predict", tags=['pipeline'])
 async def predict_route():
     result = run_pipeline("prediction")
