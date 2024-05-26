@@ -69,5 +69,6 @@ def main(pipeline_type):
         print(e)
         logging.error(e, exc_info=True)
 
+
 if __name__ == "__main__":
     app_run(app, host=APP_HOST, port=APP_PORT)
