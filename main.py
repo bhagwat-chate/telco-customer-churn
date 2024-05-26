@@ -1,6 +1,4 @@
 import os
-import datetime
-import logging
 from fastapi import FastAPI, Response
 from starlette.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,29 +21,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Function to set up logging
-def setup_logging(global_timestamp):
-    log_dir = os.path.join(os.getcwd(), 'dev-tcc-artifact')
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
-    log_filename = os.path.join(log_dir, f"execution_{global_timestamp}.log")
-    logging.basicConfig(
-        level=logging.INFO,
-        format='[%(asctime)s] %(lineno)d %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler(log_filename),
-            logging.StreamHandler()
-        ]
-    )
-    logging.info(f"Logging initialized. Log file: {log_filename}")
-    return log_filename
-
 # Function to run the pipeline
 def run_pipeline(pipeline_type):
     try:
         global_timestamp = generate_global_timestamp()
-        log_filename = setup_logging(global_timestamp)
+        setup_logger(global_timestamp)  # Initialize logger with timestamp
 
         pipeline_obj = DataPipeline(global_timestamp)
 
@@ -53,13 +33,10 @@ def run_pipeline(pipeline_type):
 
         if pipeline_type == 'training':
             pipeline_obj.run_train_pipeline()
-
         elif pipeline_type == 'prediction':
             pipeline_obj.run_predict_pipeline()
 
         logging.info(f"END: MODEL {pipeline_type.upper()}")
-        logging.info(f"Log file: {log_filename}")
-
         return f"Model {pipeline_type} complete"
     except Exception as e:
         logging.error(f"Error occurred: {e}", exc_info=True)
