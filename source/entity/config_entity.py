@@ -10,7 +10,7 @@ class PipelineConfig:
         self.aws_bucket_name = constant.AWS_BUCKET_NAME
         self.aws_bucket_prefix = constant.AWS_BUCKET_PREFIX
 
-        self.mongodb_url_key = os.environ['MONGODB_KEY']
+        self.mongodb_url_key = "mongodb+srv://datawave05:vhR69BnIn434lGwX@datawave.aignamw.mongodb.net/?retryWrites=true&w=majority" #os.environ['MONGODB_KEY']
 
         self.artifact_dir = os.path.join(constant.ARTIFACT_DIR, global_timestamp)
         self.global_timestamp = global_timestamp
