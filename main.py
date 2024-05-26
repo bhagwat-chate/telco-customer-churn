@@ -75,4 +75,3 @@ def main(pipeline_type):
 
 if __name__ == '__main__':
     app_run(app, host=APP_HOST, port=APP_PORT)
-
