@@ -19,7 +19,7 @@ class ModelPrediction:
     def load_model_pickle(self):
         try:
 
-            with open(self.utility_config.final_model_path +'\\'+ self.utility_config.final_model_file_name, 'rb') as file:
+            with open(self.utility_config.final_model_path +'/'+ self.utility_config.final_model_file_name, 'rb') as file:
 
                 return pickle.load(file)
 
