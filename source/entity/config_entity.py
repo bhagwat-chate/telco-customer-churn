@@ -4,13 +4,14 @@ from source.constant import constant
 class PipelineConfig:
     def __init__(self, global_timestamp):
 
-        self.aws_access_key = 'AKIAZQ3DSRPNOC6KJIUR' # os.environ['AWS_ACCESS_KEY_ID']
-        self.aws_secret_key = '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' #os.environ['AWS_SECRET_ACCESS_KEY']
-        self.aws_region = 'ap-south-1' #os.environ['AWS_REGION']
+        self.aws_access_key = os.environ['AWS_ACCESS_KEY_ID']
+        self.aws_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
+        self.aws_region = os.environ['AWS_REGION']
         self.aws_bucket_name = constant.AWS_BUCKET_NAME
         self.aws_bucket_prefix = constant.AWS_BUCKET_PREFIX
 
-        self.mongodb_url_key = "mongodb+srv://datawave05:vhR69BnIn434lGwX@datawave.aignamw.mongodb.net/?retryWrites=true&w=majority" #os.environ['MONGODB_KEY']
+        self.mongodb_url_key = os.environ['MONGODB_KEY']
+        # self.mongodb_url_key = "mongodb+srv://datawave05:vhR69BnIn434lGwX@datawave.aignamw.mongodb.net/?retryWrites=true&w=majority" #os.environ['MONGODB_KEY']
 
         self.artifact_dir = os.path.join(constant.ARTIFACT_DIR, global_timestamp)
         self.global_timestamp = global_timestamp

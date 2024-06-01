@@ -62,5 +62,5 @@ PREDICT_DI_COLLECTION_NAME = "predict-telco-customer-churn"
 
 FINAL_MODEL_FILE_NAME = "GradientBoostingClassifier.pkl"
 
-AWS_BUCKET_NAME = "dev-telco-cust-churn"
+AWS_BUCKET_NAME = "deploy-tcc-artifact"
 AWS_BUCKET_PREFIX = "dev-tcc-artifact"

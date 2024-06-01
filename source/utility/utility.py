@@ -1,7 +1,9 @@
 import os
 import pandas as pd
 import boto3
-
+import botocore
+import logging
+import sys
 from io import BytesIO
 from datetime import datetime
 from source.exception import ChurnException
@@ -57,6 +59,7 @@ def upload_artifact_to_s3(df, filename, file_path, bucket_name):
             if e.response['Error']['Code'] == '404':
                 raise ChurnException(f"S3 bucket {bucket_name} does not exist.")
             else:
+                print(f"ERROR: {e}")
                 raise e
 
         # Convert DataFrame to CSV string
@@ -71,11 +74,14 @@ def upload_artifact_to_s3(df, filename, file_path, bucket_name):
 
         print(f"CSV file uploaded to S3: s3://{bucket_name}/{s3_object_key}")
 
-    except ClientError as e:
-        raise ChurnException(f"Error uploading CSV file to S3: {e}")
+    except botocore.exceptions.ClientError as e:
+        logging.error(f"Error uploading CSV file to S3: {e}")
+        raise ChurnException(f"Error uploading CSV file to S3: {e}", error_detail=sys)
 
-    except ChurnException as e:
-        raise e
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+        raise ChurnException(f"Unexpected error: {str(e)}", error_detail=sys)
+
 
 def read_csv_from_s3(bucket_name, file_key):
     try:
